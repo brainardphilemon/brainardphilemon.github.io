@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 160" role="img" aria-labelledby="title desc">
+  <title id="title">Feedforward neural network</title>
+  <desc id="desc">Input nodes connect through two hidden layers to a regression output.</desc>
+  <rect width="240" height="160" fill="#eef3f7"/>
+  <g stroke="#9ab1c2" stroke-width="1.4" opacity=".75">
+    <path d="M32 34 93 24M32 34 93 62M32 34 93 100M32 34 93 138M32 80 93 24M32 80 93 62M32 80 93 100M32 80 93 138M32 126 93 24M32 126 93 62M32 126 93 100M32 126 93 138"/>
+    <path d="M93 24 158 40M93 24 158 80M93 24 158 120M93 62 158 40M93 62 158 80M93 62 158 120M93 100 158 40M93 100 158 80M93 100 158 120M93 138 158 40M93 138 158 80M93 138 158 120"/>
+    <path d="M158 40 215 80M158 80 215 80M158 120 215 80"/>
+  </g>
+  <g fill="#2c5a83"><circle cx="32" cy="34" r="7"/><circle cx="32" cy="80" r="7"/><circle cx="32" cy="126" r="7"/></g>
+  <g fill="#6a91aa"><circle cx="93" cy="24" r="6"/><circle cx="93" cy="62" r="6"/><circle cx="93" cy="100" r="6"/><circle cx="93" cy="138" r="6"/><circle cx="158" cy="40" r="6"/><circle cx="158" cy="80" r="6"/><circle cx="158" cy="120" r="6"/></g>
+  <circle cx="215" cy="80" r="9" fill="#b49056"/>
+</svg>
