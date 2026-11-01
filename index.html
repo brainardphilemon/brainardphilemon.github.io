@@ -21,6 +21,8 @@
     .prose{max-width:790px;margin-left:calc(220px + 3rem)}.prose p{font-size:1.03rem;line-height:1.8;margin-bottom:1.25rem}.prose h3{margin-top:2.2rem}.research-block{border-top:1px solid var(--line);padding-top:1.8rem;margin-top:1.8rem}.focus-line{color:var(--muted);font-size:.88rem!important;margin-top:2rem}
     .reference-list{list-style:none;counter-reset:publication 4;margin:0;padding:0;border-top:1px solid var(--line)}.reference-list li{counter-increment:publication -1;display:grid;grid-template-columns:48px minmax(0,1fr);gap:1.15rem;padding:1.65rem 0}.reference-list li::before{content:"[" counter(publication) "]";font-size:1.15rem;font-weight:700;line-height:1.45}.reference-text{max-width:950px}.reference-text p{margin:0}.reference-title{font-family:"DM Sans",Arial,sans-serif;font-size:1.18rem;font-weight:700;line-height:1.45}.reference-authors{font-size:1.02rem;color:var(--ink);line-height:1.6}.reference-authors strong{font-weight:700}.reference-venue{font-size:1rem;font-style:italic;color:#ad6026;line-height:1.55}.reference-venue a{color:inherit}.reference-links{font-size:1rem;line-height:1.55}.reference-links a{font-weight:600}
     @media(max-width:800px){.portrait{justify-self:start;max-width:420px}.prose{margin-left:0}}
+    .news-list{list-style:none;margin:0;padding:0;border-top:1px solid var(--line)}.news-list li{display:grid;grid-template-columns:160px 1fr;gap:2.4rem;padding:1rem 0;border-bottom:1px solid var(--line)}.news-list .small-label{line-height:1.72}.news-list p{margin:0;font-size:.97rem}
+    @media(max-width:600px){.news-list li{grid-template-columns:1fr;gap:.25rem}}
     @media(max-width:600px){.reference-list li{grid-template-columns:36px minmax(0,1fr);gap:.55rem}.reference-title{font-size:1.08rem}.reference-authors,.reference-venue,.reference-links{font-size:.94rem}}
 
     .project-list{border-top:1px solid var(--line)}.project-row{display:grid;grid-template-columns:175px 1fr;gap:2.7rem;padding:1.8rem 0;border-bottom:1px solid var(--line)}.project-type{color:var(--muted);font-size:.85rem;line-height:1.5}.project-row h3{font-size:1.2rem;margin-bottom:.6rem}.project-row p{max-width:740px;color:#53616b;font-size:.97rem}.project-link{font-size:.88rem;font-weight:600;border-bottom:1px solid #9bb1c2}.project-link:hover{text-decoration:none;border-color:var(--blue)}
@@ -48,6 +50,16 @@
       </div>
       <figure class="portrait"><div class="portrait-frame"><img src="portrait.jpg" alt="Brainard smiling on a street in Singapore" width="1200" height="900" fetchpriority="high"></div><figcaption>Singapore, 2026</figcaption></figure>
     </section>
+    <section class="rule-section" id="news"><div class="wrap">
+      <div class="section-heading"><h2>News</h2></div>
+      <ul class="news-list">
+        <li><span class="small-label">Oct 2026</span><p>Received the NeurIPS 2026 Financial Assistance Award.</p></li>
+        <li><span class="small-label">Aug 2026</span><p>Attended the <a href="blogs.html">Workshop on Mathematical Foundations of AI Models</a> at the National University of Singapore.</p></li>
+        <li><span class="small-label">Aug 2026</span><p>Started as a Research Contributor at Nvtha AI, Singapore.</p></li>
+        <li><span class="small-label">Jul 2026</span><p>Started as a Visiting Student at SUTD, working with Prof. Ezekiel Soremekun.</p></li>
+        <li><span class="small-label">May 2026</span><p>Started as a Research Intern at NTU Singapore, working with Prof. Erik Cambria.</p></li>
+      </ul>
+    </div></section>
     <section class="rule-section" id="interests"><div class="wrap">
       <div class="section-heading"><h2>Interests</h2></div>
       <ul class="interest-list">
