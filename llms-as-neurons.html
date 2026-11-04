@@ -4,8 +4,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#f9f9f7">
-  <meta name="description" content="Brainard Philemon on a neural network where every neuron is a reasoning model: what the neurons said, how they moved their weights, and how it compared with ordinary training.">
-  <title>We replaced every neuron with a reasoning model · Brainard Philemon</title>
+  <meta name="description" content="LLM-as-a-Neuron: replacing neurons in a neural network with reasoning models. What the neurons said, how they moved their weights, and how it compared with ordinary training.">
+  <title>LLM-as-a-Neuron · Brainard Philemon</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
@@ -40,72 +40,68 @@
   <header class="site-header"><div class="wrap header-inner"><a class="brand" href="index.html">Brainard Philemon Jagati</a><nav class="nav" aria-label="Main navigation"><a href="blogs.html" aria-current="page">Blogs</a><a href="cv.pdf" target="_blank" rel="noopener noreferrer">CV</a></nav></div></header>
   <main class="wrap blog-page" id="main">
     <article class="blog-article" id="llms-as-neurons">
-      <header class="blog-header"><span class="small-label">November 2026 · Research notes</span><h1>We replaced every neuron in a neural network with a reasoning model</h1></header>
-      <p>Each neuron did its own arithmetic and decided its own weights, seeing only one number: the loss. Here is what happened, what the neurons said while they learned, and where it beat (and lost to) ordinary training.</p>
+      <header class="blog-header"><span class="small-label">November 2026 · Research notes</span><h1>LLM-as-a-Neuron: Replacing neurons in a neural network with reasoning models.</h1></header>
+      <figure class="post-figure"><img src="llm-as-a-neuron.webp" alt="Diagram of a neural network with three layers of neurons, where every neuron is drawn as a brain labelled LLM, connected by arrows from layer to layer." width="1920" height="1080"><figcaption>The LLM-as-a-neuron network.</figcaption></figure>
+      <p><strong>Artifacts:</strong> <a href="https://github.com/brainardphilemon/llms-as-neurons/" target="_blank" rel="noopener noreferrer">https://github.com/brainardphilemon/llms-as-neurons/</a></p>
+
+      <h2>TL;DR</h2>
+      <p>We built neural networks where every neuron is a reasoning model that computes its own output and tunes its own weights, seeing only the loss value and neighbouring weights: no gradients, no targets, no task description. They learned on every task we tested, where even Adam and gradient descent were stuck. With a weak reasoner (Haiku) they were no better than random search but GPT-6 Astra beat 88% of random-search runs on the hardest task. Also we observe that models could guess the task without being told at all, propose their own activation functions, etc.</p>
 
       <h2>The idea</h2>
-      <p>A neuron in a neural network is simple: multiply each input by a weight, add a bias, squash the result through an activation function. Training adjusts those weights using gradients, the exact slope of the error with respect to every weight.</p>
-      <p>We asked a different question. What if every neuron were a reasoning model? Each one would do its own arithmetic, and each one would decide for itself how to change its weights. It would get no gradient, no targets, and no description of the task. Just one number after every step: the loss, with “lower is better”.</p>
-      <p>We built exactly that, with networks of 3 to 5 LLM neurons, on four small tasks. The short version:</p>
+      <p>A neuron in a neural network is simple. It works by multiplying each input by a weight, add a bias, squash the result through an activation function. Training adjusts those weights using gradients, the exact slope of the error with respect to every weight.</p>
+      <p>Seeing how good recent models can perform goal driven tasks, we asked a different question. What if every neuron were a reasoning model? Each one would do its own arithmetic, and each one would decide for itself how to change its weights. It would get no gradient, no targets, and no description of the task. Just one number after every step: the loss value, with “lower is better” and it’s neighbouring weights.</p>
+      <p>We built networks of 3 — 5 LLM neurons, on four small tasks. Briefing it up:</p>
       <ul>
-        <li>The networks learned on every task, including ones where Adam and gradient descent got stuck completely.</li>
-        <li>With a weak update model, the LLM neurons were about as good as random trial and error.</li>
-        <li>With a strong one (GPT-6 Astra), they fitted the hardest task better than 88% of random-search runs.</li>
-        <li>And along the way, without ever being told what the task was, Astra wrote that it was “likely about classifying moons”. It was.</li>
+        <li>The networks learned well on every task, including ones where Adam and gradient descent got stuck completely.</li>
+        <li>With a weak reasoning model, the LLM neurons were about as good as random trial and error.</li>
+        <li>With a strong reasoning one (GPT-6 Astra), they fitted the hardest task better than 88% of random-search runs.</li>
+        <li>And along the way, without ever being told what the task was. The models could form hypothesis about the tasks.</li>
       </ul>
 
       <h2>How an LLM neuron works</h2>
       <p>Every neuron has two jobs, and an LLM does both.</p>
-      <p><strong>Job 1: compute the output (the forward pass).</strong> The neuron gets its inputs, weights, bias and activation, and must reply with one number. We used Claude Haiku 5.5 for this, because it is cheap and, once prompted properly, exact. A real exchange from one of our runs:</p>
+      <p><strong>Job 1: compute the output (the forward pass).</strong> The neuron gets its inputs, weights, bias and activation, and must reply with one number. We used Claude Haiku 5.5 for this, because it is cheap and strong enough for these calculations. A real exchange from one of our runs:</p>
       <pre><code>inputs: [0.13, -1.01]
 weights: [-0.393, -0.047]
 bias: 0.167
 activation: relu</code></pre>
       <pre><code>ANSWER: 0.1634</code></pre>
       <p>That is correct: −0.393 × 0.13 + (−0.047) × (−1.01) + 0.167 = 0.1634, and ReLU leaves positive numbers alone. A run makes about 9,000 to 10,000 of these calls, and identical questions are answered from a cache so the network always gives the same output for the same weights.</p>
-      <p><strong>Job 2: decide how to change (the update).</strong> After each step, every neuron gets a briefing and replies with new parameters as JSON. The briefing contains its current weights and everyone else’s, what it received and output on each example, a table of every setting it has tried with the loss each one produced, how much influence each neuron has on the final output, and what the neurons before it just changed. A real reply:</p>
+      <p><strong>Job 2: decide how to change (the update).</strong> After each step, every neuron gets a briefing and replies with new parameters as JSON. The briefing contains its current weights and everyone else’s, what it received and output on each example, a table of every setting it has tried with the loss each one produced, how much influence each neuron has on the final output. A sample shown below:</p>
       <pre><code>{"weights": [1.0, -1.0], "bias": 0.0, "activation": "tanh"}</code></pre>
       <p>The activation is a parameter the neuron chooses, from relu, tanh, sigmoid, abs, square, step or anything it writes as a formula.</p>
       <p><strong>The rules of the game.</strong> Neurons update one at a time. After each proposal we re-measure the loss on the whole network. If the loss went up, the change is undone automatically, and the next neuron sees exactly what happened:</p>
       <pre><code>L0N3: weights [0.009, -0.436], bias 0.512, abs
-   -&gt; weights [0.009, -0.436], bias 0.112, tanh
-   =&gt; loss 0.1896 -&gt; 0.2047 (+0.0151)  REVERTED (raised the loss)</code></pre>
-      <p>The loss itself, mean squared error, is computed in plain Python. The neurons are never told its formula, the targets, or the task.</p>
+-&gt; weights [0.009, -0.436], bias 0.112, tanh
+=&gt; loss 0.1896 -&gt; 0.2047 (+0.0151) REVERTED (raised the loss)</code></pre>
+      <p>The loss itself is computed in plain Python. The neurons are never told its formula nor the targets nor the task.</p>
 
       <h2>What the neurons said</h2>
-      <p>The best part of this experiment is that every decision comes with an explanation. All quotes below are the reasoning text the models returned before each update, copied from our logs. For GPT-6 Astra this is a summary of its reasoning provided by the API, not the raw chain of thought.</p>
+      <p>The best part of this experiment is that every decision comes with an explanation. All quotes below are the reasoning text the models returned before each update which are copied from our logs. For GPT-6 Astra this is a summary of its reasoning.</p>
       <h3>Astra worked out the task without being told</h3>
       <p>The neurons were never told what the task was. Their prompts contain weights, inputs, outputs and a loss number, nothing more. Partway through training on our two-moons dataset, one of Astra’s hidden neurons wrote:</p>
       <blockquote>“It seems I’m dealing with an unknown task that’s likely about classifying moons.”</blockquote>
       <p>Others described “binary targets” and “low versus high binary targets”. It was not always right: another neuron guessed “a classification task involving circles”, a different classic benchmark. But it was reading the shape of the data and the behaviour of the loss and forming a hypothesis, which is more than any gradient does.</p>
       <p>The output neuron then acted on that hypothesis. Reasoning that the targets were binary, it invented its own activation function:</p>
-      <blockquote>“Clipped ReLU could be an interesting option... I’m considering using the formula min(1, max(0, x))”</blockquote>
+      <blockquote>“Clipped ReLU could be an interesting option… I’m considering using the formula min(1, max(0, x))”</blockquote>
       <p>That keeps predictions between 0 and 1, exactly what you want for 0/1 labels. Nobody suggested it. Later neurons tried more of their own designs: <code>x*x - 1</code>, a leaky ReLU written as <code>max(0, x) + 0.3*min(0, x)</code>, and <code>1 / (1 + exp(-x + 0.25*x*x))</code>.</p>
       <h3>Nemotron diagnosed a useless neuron in one look</h3>
-      <p>One hidden neuron started with a <code>step</code> activation that output 1 for nearly every point. Nemotron 3 Ultra’s reasoning, at the very first update:</p>
-      <blockquote>“With current weights and bias, we output 1 for almost all inputs except a few... That means our neuron is almost always 1. That might not be discriminative enough.”</blockquote>
+      <p>One hidden neuron started with a <code>step</code> activation that output 1 for nearly every point. Nemotron 3 Ultra's reasoning, at the very first update:</p>
+      <blockquote>“With current weights and bias, we output 1 for almost all inputs except a few… That means our neuron is almost always 1. That might not be discriminative enough.”</blockquote>
       <p>It switched to <code>tanh</code> with weights [1.0, −1.0], a feature that compares the two inputs. The loss dropped from 0.856 to 0.167 in that single move.</p>
       <h3>Haiku found the XOR trick</h3>
       <p>On XOR, which needs to treat “one input on” differently from “both on”, a Haiku neuron noticed what its own weights were doing:</p>
       <blockquote>“L0N1 behaves like a difference of the inputs, x1 minus x2, which looks fine for an XOR-like target.”</blockquote>
       <p>It never saw a target. It guessed the task from the loss and the inputs, as Astra did later.</p>
-      <h3>A neuron caught our bug</h3>
-      <p>In our first version, a 20-token reply limit cut off half the neurons’ answers, and our code misread the fragments. One neuron noticed something was wrong before we did:</p>
-      <blockquote>“...the outputs don’t line up with what I’d predict from the weights. The model may be taking different inputs than I assumed.”</blockquote>
-      <h3>And sometimes they lost their nerve</h3>
-      <p>On the largest task, Haiku neurons became timid after most of their moves were undone:</p>
-      <blockquote>“A bias of 0.0 with the same weights is a small, safe step.”</blockquote>
-      <blockquote>“I’m also considering an activation swap to identity, though that feels risky.”</blockquote>
-      <p>That caution stalled training completely, and it shaped the next section.</p>
 
       <h2>How they moved their weights</h2>
       <p>The model choosing the updates mattered more than anything else we changed. We kept Haiku for the arithmetic and swapped only the model that decides the new weights.</p>
-      <figure class="post-figure"><img src="llm-neurons-update-models.png" alt="Line chart of training error over 20 steps on the larger moons task. GPT-6 Astra falls fastest and ends at 0.065, Nemotron 3 Ultra ends at 0.084, the hill-climbing median at 0.078, Haiku stalls at 0.244, and Adam and gradient descent stay at 0.500." width="1200" height="720" loading="lazy"><figcaption>Training error on the larger moons task, one run per update model. Random hill climbing: median and middle half of 200 runs from the same start.</figcaption></figure>
+      <figure class="post-figure"><img src="llm-neurons-update-models.png" alt="Line chart of training error over 20 steps on the larger moons task. GPT-6 Astra falls fastest and ends at 0.065, Nemotron 3 Ultra ends at 0.084, the hill-climbing median at 0.078, Haiku stalls at 0.244, and Adam and gradient descent stay at 0.500." width="1200" height="720" loading="lazy"></figure>
       <p>Each model had a recognisable style:</p>
       <ul>
-        <li><strong>Haiku: timid.</strong> Typical biggest change per update 0.09. 11 of 100 updates lowered the loss. 3 activation changes kept.</li>
-        <li><strong>Nemotron 3 Ultra: bold.</strong> Typical biggest change 1.00. 15 of 100 updates lowered the loss. 14 activation changes kept.</li>
-        <li><strong>GPT-6 Astra: measured.</strong> Typical biggest change 0.50. 23 of 100 updates lowered the loss. 4 activation changes kept, including its own clipped ReLU.</li>
+        <li><strong>Haiku:</strong> Typical biggest change per update 0.09. 11 of 100 updates lowered the loss. 3 activation changes kept.</li>
+        <li><strong>Nemotron 3 Ultra:</strong> Typical biggest change 1.00. 15 of 100 updates lowered the loss. 14 activation changes kept.</li>
+        <li><strong>GPT-6 Astra:</strong> Typical biggest change 0.50. 23 of 100 updates lowered the loss. 4 activation changes kept, including its own clipped ReLU.</li>
       </ul>
       <p><strong>Haiku nudged.</strong> Its typical move was under 0.1. Most nudges made things slightly worse and were undone, so it nudged even less, and training froze at step 3.</p>
       <p><strong>Nemotron leapt.</strong> Once we added a rule forcing big moves after two failed updates, Nemotron made changes of 1.0 or more and switched activations constantly. Most leaps missed, but the few that landed were large: the single best one cut the loss by 80%.</p>
@@ -118,7 +114,7 @@ activation: relu</code></pre>
         <li><strong>XOR:</strong> output 1 when exactly one of two inputs is on. Network 2 → 2 → 1, 9 weights to learn, 4 training points, no test set.</li>
         <li><strong>3-bit parity:</strong> output 1 when an odd number of three inputs is on. Network 3 → 3 → 1, 16 weights, 8 training points, no test set.</li>
         <li><strong>Moons:</strong> which of two interlocking half-moons a 2D point belongs to. Network 2 → 3 → 1, 13 weights, 16 training and 16 test points.</li>
-        <li><strong>Moons, larger:</strong> the same, with more points and more noise. Network 2 → 4 → 1, 17 weights, 40 training and 40 test points.</li>
+        <li><strong>Moons (larger):</strong> same but with more points and more noise. Network 2 → 4 → 1, 17 weights, 40 training and 40 test points.</li>
       </ul>
       <p>The moons tasks have a separate test set the neurons never see, so we can check whether a network learned the shape or just memorised the training points.</p>
       <h3>Making the comparison fair</h3>
@@ -126,14 +122,14 @@ activation: relu</code></pre>
       <ul>
         <li>the same network, the same starting weights and the same data</li>
         <li>only the loss value, never gradients or targets</li>
-        <li>updates one neuron at a time, with the same automatic undo</li>
+        <li>updates one neuron at a time with the same automatic undo</li>
       </ul>
-      <p>The only difference is who proposes each change: an LLM that reasons about it, or random noise. If the LLM is no better than noise, its reasoning is not helping.</p>
+      <p>The only difference is who proposes each change: an LLM that reasons about it, or random noise. If the LLM is no better than noise that means its reasoning is not helping.</p>
       <p>Because one random-search run can be lucky or unlucky, we ran it 200 times from the same start and reported where the LLM run would rank among them. We also ran plain gradient descent and Adam, from the same start and from 50 random starts, as a reference for what full information achieves.</p>
-      <p>One caveat matters for everything that follows: each LLM result is a single run. Two runs with identical settings ended at 0.173 and 0.193, so treat individual numbers as indications, not proof.</p>
+      <p>One caveat matters for everything that follows: each LLM result is a single run due to constraints.</p>
 
       <h2>Results</h2>
-      <p>After 20 steps, LLM neurons beat gradient methods wherever those got stuck, and roughly matched random search, until a strong model took the lead on the largest task.</p>
+      <p>After 20 steps, LLM neurons beat gradient methods wherever those got stuck and roughly matched random search until a strong model took the lead on the largest task. Training error (lower is better), with the share of 200 random-search runs the LLM run beat:</p>
       <div class="table-wrap"><table>
         <thead><tr><th>Task</th><th>Model choosing the weights</th><th>LLM neurons (training error)</th><th>Random search, typical run</th><th>LLM beats this share of random runs</th><th>Adam from the same start</th></tr></thead>
         <tbody>
@@ -154,16 +150,14 @@ activation: relu</code></pre>
       <h2>How this differs from earlier work</h2>
       <p>None of the ingredients is new on its own. What we did not find in earlier work is the combination: one reasoning agent per neuron, doing that neuron’s arithmetic and tuning its own weights and activation, coordinating with its neighbours, and never told what the task is.</p>
       <ul>
-        <li><strong><a href="https://arxiv.org/html/2309.03409v3" target="_blank" rel="noopener noreferrer">OPRO</a> (Google DeepMind):</strong> one LLM improves a solution from a history of past attempts and scores, including linear-regression weights. We use one LLM per neuron, each tuning only itself; the task is hidden; and the LLM also computes the output.</li>
-        <li><strong><a href="https://arxiv.org/html/2505.12470v2" target="_blank" rel="noopener noreferrer">NeuroGen</a>:</strong> an LLM writes a network’s weights directly, without gradient training. We iterate instead: propose, measure, keep or undo, repeat.</li>
-        <li><strong><a href="https://proceedings.neurips.cc/paper_files/paper/2023/hash/b5afe13494c825089b1e3944fdaba212-Abstract.html" target="_blank" rel="noopener noreferrer">Deep Language Networks</a>:</strong> layers of LLMs whose prompts act as the weights. Our neurons pass numbers, not text, and have numeric weights.</li>
-        <li><strong>TextGrad and <a href="https://arxiv.org/pdf/2406.18532" target="_blank" rel="noopener noreferrer">Agent Symbolic Learning</a>:</strong> written feedback flows backward through LLM pipelines to improve prompts. We tune numbers from a single loss value, with no written feedback.</li>
-        <li><strong>Hill climbing and coordinate descent:</strong> try a change to one block of parameters, keep it if the score improves. Same loop, but a reasoning model proposes each change instead of random noise.</li>
+        <li><strong><a href="https://arxiv.org/html/2309.03409v3" target="_blank" rel="noopener noreferrer">OPRO</a> (2023):</strong> one LLM improves a solution from a history of past attempts and scores, including linear-regression weights. We use one LLM per neuron, each tuning only itself; the task is hidden; and the LLM also computes the output.</li>
+        <li><strong><a href="https://proceedings.neurips.cc/paper_files/paper/2023/hash/b5afe13494c825089b1e3944fdaba212-Abstract.html" target="_blank" rel="noopener noreferrer">Deep Language Networks</a> (2023):</strong> layers of LLMs whose prompts act as the weights. Our neurons pass numbers, not text, and have numeric weights.</li>
+        <li><strong><a href="https://arxiv.org/pdf/2406.18532" target="_blank" rel="noopener noreferrer">Agent Symbolic Learning</a> (2024):</strong> written feedback flows backward through LLM pipelines to improve prompts. We tune numbers from a single loss value, with no written feedback.</li>
+        <li><strong><a href="https://arxiv.org/html/2505.12470v2" target="_blank" rel="noopener noreferrer">NeuroGen</a> (2025):</strong> an LLM writes a network’s weights directly, without gradient training. We iterate instead: propose, measure, keep or undo, repeat.</li>
       </ul>
       <p>The closest relative is OPRO run separately inside every neuron. The experiment above is exactly what tests whether that decentralisation, plus reasoning, buys anything over the plain loop with random proposals.</p>
 
       <h2>How we could use this</h2>
-      <p>This is not a way to train large networks: for plain fitting, random search and gradient descent do the job far faster. The value is where gradients don’t reach and where explanations matter.</p>
       <ul>
         <li><strong>Optimising things that have no gradient.</strong> Systems with step functions, discrete choices, rules, simulators or physical hardware cannot be trained by backpropagation. Our networks with <code>step</code> activations were exactly that case, and reasoning neurons trained them anyway.</li>
         <li><strong>Black-box objectives.</strong> When the only feedback is a score (a human rating, a test pass rate, a business metric), reasoning optimisers can form hypotheses about what the score rewards, as Astra did when it guessed the task was classifying moons.</li>
@@ -172,8 +166,10 @@ activation: relu</code></pre>
         <li><strong>A coach for ordinary training.</strong> Gradient training fails in recognisable ways: dead neurons, plateaus, bad starting points. A reasoning model watching the run could spot those and intervene, then hand back to the fast optimiser.</li>
         <li><strong>A testbed for cooperating agents.</strong> A network is a clean, measurable setting for studying how many AI agents coordinate when each sees only part of the picture.</li>
       </ul>
-      <h3>What comes next</h3>
-      <p>Everything above is one run per setting, so the next step is repeating the key runs with several random seeds. After that: a baseline where one central LLM tunes every weight at once (does one-agent-per-neuron actually help?), switching off each component in turn to see which ones matter, and larger tasks. The question we most want answered is whether reasoning genuinely beats random search, or just matches it at a much higher price. On the evidence so far, the answer depends on how good the reasoner is.</p>
+
+      <p>Thanks for reading! These results are early findings from ongoing experiments, and there’s more to come. If you have ideas about this method, spot something wrong, or just want to talk, please reach out. I’d love to connect.</p>
+      <p>~Drafted with the help of AI Tools and my sleepy brain.</p>
+      <p>Reach me out: <a href="mailto:brainardjagati27@gmail.com">brainardjagati27@gmail.com</a></p>
       <p class="blog-back post-nav"><a href="blogs.html">← All posts</a><a href="index.html">Back to the portfolio</a></p>
     </article>
   </main>
