@@ -142,6 +142,7 @@
     .work-card .year{font-size:.75rem;font-weight:700;letter-spacing:.12em;color:var(--gold);display:block;margin-bottom:.35rem}
     .work-card h3 a{color:var(--ink);border-bottom:1px solid #9bb1c2}
     .work-card h3 a:hover{color:var(--blue);text-decoration:none;border-color:var(--blue)}
+    .work-wide{grid-column:1/-1}
     .use-card .idx{display:block;font-family:"Libre Baskerville",Georgia,serif;font-size:1.05rem;color:var(--gold);margin-bottom:.4rem}
 
     .end-card{margin-top:3.6rem;background:var(--ink);color:#e9eef1;border-radius:8px;padding:clamp(1.6rem,4vw,2.4rem)}
@@ -379,6 +380,7 @@ activation: relu</code></pre></div>
         <div class="card work-card"><span class="year">2023</span><h3><a href="https://proceedings.neurips.cc/paper_files/paper/2023/hash/b5afe13494c825089b1e3944fdaba212-Abstract.html" target="_blank" rel="noopener noreferrer">Deep Language Networks</a></h3><p>layers of LLMs whose prompts act as the weights. Our neurons pass numbers, not text, and have numeric weights.</p></div>
         <div class="card work-card"><span class="year">2024</span><h3><a href="https://arxiv.org/pdf/2406.18532" target="_blank" rel="noopener noreferrer">Agent Symbolic Learning</a></h3><p>written feedback flows backward through LLM pipelines to improve prompts. We tune numbers from a single loss value, with no written feedback.</p></div>
         <div class="card work-card"><span class="year">2025</span><h3><a href="https://arxiv.org/html/2505.12470v2" target="_blank" rel="noopener noreferrer">NeuroGen</a></h3><p>an LLM writes a network’s weights directly, without gradient training. We iterate instead: propose, measure, keep or undo, repeat.</p></div>
+        <div class="card work-card work-wide"><span class="year">2026</span><h3>Weight-Space Programming</h3><p>LLMs directly inspect, generate, and modify neural-network weights without gradients. It uses an LLM to program networks, rather than one reasoning agent per numerical neuron as we do.</p></div>
       </div>
       <div class="callout">
         <span class="small-label">Closest relative</span>
