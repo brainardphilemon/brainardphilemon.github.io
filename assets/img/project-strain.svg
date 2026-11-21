@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 160" role="img" aria-labelledby="title desc">
+  <title id="title">Sparse strain field prediction</title>
+  <desc id="desc">Scattered image measurements pass through a U-Net to produce a continuous strain map.</desc>
+  <rect width="240" height="160" fill="#eef3f7"/>
+  <rect x="13" y="24" width="63" height="112" rx="4" fill="#f9f9f7" stroke="#cbd9e1"/>
+  <g fill="#547d96"><circle cx="29" cy="40" r="2"/><circle cx="48" cy="35" r="2"/><circle cx="62" cy="53" r="2"/><circle cx="37" cy="68" r="2"/><circle cx="52" cy="79" r="2"/><circle cx="23" cy="92" r="2"/><circle cx="66" cy="101" r="2"/><circle cx="45" cy="119" r="2"/><circle cx="58" cy="130" r="2"/></g>
+  <path d="M79 80h18m52 0h15" stroke="#8ea9b9" stroke-width="2" marker-end="url(#arrow)"/>
+  <defs><marker id="arrow" viewBox="0 0 8 8" refX="6" refY="4" markerWidth="5" markerHeight="5" orient="auto"><path d="m0 0 8 4-8 4" fill="#8ea9b9"/></marker><linearGradient id="heat" x1="0" y1="1" x2="1" y2="0"><stop stop-color="#2c5a83"/><stop offset=".44" stop-color="#78a9ab"/><stop offset=".7" stop-color="#e1c279"/><stop offset="1" stop-color="#c17b59"/></linearGradient></defs>
+  <path d="M101 35v65h12v17h21v-17h12V35" fill="none" stroke="#2c5a83" stroke-width="7" stroke-linejoin="round"/>
+  <path d="M108 40h31M108 62h31" stroke="#9db5c5" stroke-width="2"/>
+  <rect x="166" y="24" width="61" height="112" rx="4" fill="url(#heat)" stroke="#cbd9e1"/>
+  <path d="M168 51c20-16 37 11 57-5M168 85c22 21 38-10 57 6M168 113c17-12 32-5 57 5" fill="none" stroke="#f8f5e9" stroke-width="2" opacity=".8"/>
+</svg>
