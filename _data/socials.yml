@@ -1,7 +1,4 @@
-# Displayed in the order listed. See the jekyll-socials plugin for available keys.
-email: brainardjagati27@gmail.com
-scholar_userid: dmHwi90AAAAJ
-github_username: brainardphilemon
-linkedin_username: brainardphilemon
-cv_pdf: /assets/pdf/cv.pdf
-rss_icon: true
+email: brainardjagati27@gmail.com # your email address
+github_username: brainardphilemon # your GitHub user name
+linkedin_username: brainardphilemon # your LinkedIn user name
+scholar_userid: dmHwi90AAAAJ # your Google Scholar ID

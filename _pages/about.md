@@ -2,34 +2,19 @@
 layout: about
 title: about
 permalink: /
-subtitle: Data Science undergraduate · IIIT Nagpur · Visiting Student, SUTD
-
+subtitle:
 profile:
   align: right
-  image: prof_pic.jpg
-  image_circular: false
-  more_info: >
-    <p>Singapore, 2026</p>
+  image: profile_pic.jpg
+  image_circular: true # crops the image to make it circular
 
-selected_papers: true
-social: true
-
-announcements:
-  enabled: true
-  scrollable: true
-  limit: 5
-
-latest_posts:
-  enabled: true
-  scrollable: true
-  limit: 3
+news: true # includes a list of news items
+selected_papers: true # includes a list of papers marked as “selected={true}”
+social: true # includes social icons at the bottom of the page
 ---
-
 I am a final-year Data Science undergraduate at the Indian Institute of Information Technology Nagpur, advised by [Prof. Jitendra Tembhurne](https://code7wormer.github.io/profilepage/). I am currently a visiting student at the Singapore University of Technology and Design under [Prof. Ezekiel Soremekun](https://ezekiel-soremekun.github.io/). At Nanyang Technological University, I work on hallucination mitigation strategies in medical LLMs under [Prof. Erik Cambria](https://www.sentic.net/erikcambria/).
 
 **Interests:** AI Safety · Mechanistic Interpretability · Representation Learning · AI Security · Trustworthy AI
-
-### Research
 
 I started in computer vision, trying to understand what happens when a model sees many examples of some classes and very few of others. The familiar result was that it favored the common classes. I explored ways to adjust its decisions and training so that rare classes would not be overlooked, but I kept coming back to a deeper question: what had the model learned about those classes in its feature space?
 
