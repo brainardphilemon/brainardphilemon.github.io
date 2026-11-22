@@ -739,9 +739,6 @@ footer.sticky-bottom {
           display: inline-block;
           background-color: var(--global-theme-color);
           margin-bottom: 0.5rem;
-          // let long venue labels wrap instead of spilling out of the badge
-          white-space: normal;
-          line-height: 1.3;
 
           a {
             color: white;
