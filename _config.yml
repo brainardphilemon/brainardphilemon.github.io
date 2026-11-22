@@ -6,13 +6,13 @@ title: blank # the website title (if blank, full name will be used instead)
 first_name: Brainard
 middle_name: Philemon
 last_name: Jagati
-contact_note: The best way to contact me is through email. 
+contact_note: The best way to contact me is through LinkedIn.
 description:  # the ">" symbol means to ignore newlines until "footer_text:"
   # A simple, whitespace theme for academics. Based on [*folio](https://github.com/bogoli/-folio) design.
 footer_text: 
   Powered by <a href="https://jekyllrb.com/" target="_blank">Jekyll</a> with <a href="https://github.com/alshedivat/al-folio">al-folio</a> theme.
   # Hosted by <a href="https://pages.github.com/" target="_blank">GitHub Pages</a>.
-keywords: Brainard Philemon Jagati, AI safety, mechanistic interpretability, representation learning, AI security, trustworthy AI
+keywords: Brainard Philemon Jagati, AI safety, AI alignment, mechanistic interpretability, red teaming, representation engineering
 lang: en # the language of your site (for example: en, fr, cn, ru, etc.)
 icon: favicon.svg # the emoji used as the favicon (alternatively, provide image name in /assets/img/)
 
@@ -311,6 +311,7 @@ filtered_bibtex_keywords:
     supp,
     video,
     website,
+    hide_year,
   ]
 
 # Maximum number of authors to be shown for each publication (more authors are visible on click)

@@ -160,7 +160,9 @@
     {% if entry.month %}
       {% capture entrymonth %}{{ " " }}{{ entry.month | capitalize }}{% endcapture %}
     {% endif %}
-    {% if entry.year %}
+    {% comment %} hide_year={true} in the .bib keeps the year for sorting but leaves it off the page (used for preprints) {% endcomment %}
+    {% assign entryyear = '' %}
+    {% if entry.year and entry.hide_year != 'true' %}
       {% capture entryyear %}{{ " " }}{{ entry.year }}{% endcapture %}
     {% endif %}
     {% if entry.location %}

@@ -3,12 +3,12 @@ layout: page
 permalink: /misc/
 title: misc
 nav: true
-nav_order: 2
+nav_order: 3
 ---
 
 #### experience
 
-- **Visiting Student**, Singapore University of Technology and Design · Singapore (July 2026 – present)<br>
+- **Visiting Student Researcher**, Singapore University of Technology and Design · Singapore (July 2026 – present)<br>
   Working with Prof. Ezekiel Soremekun on jailbreaks in code LLMs, studying embeddings and internal activations to understand and defend against them.
 - **Research Intern**, Nanyang Technological University · Singapore (May 2026 – present)<br>
   Working with Prof. Erik Cambria on hallucination mitigation strategies in medical LLMs.
@@ -28,11 +28,3 @@ My full CV is [here](/assets/pdf/cv.pdf).
 - [Neural network from scratch in C++](https://github.com/brainardphilemon/neuralnetwork-in-cpp): A configurable feedforward network built with the C++ standard library. It trains with ReLU activations, backpropagation, and gradient descent for regression on housing data.
 - [Sparse strain field prediction with U-Net](https://github.com/brainardphilemon/sparse-strainfield-generation): A U-Net predicts three strain components from microscopic speckle images. A masked loss lets it learn from the small fraction of pixels with valid measurements.
 - [A backdoor defense for language models](https://github.com/brainardphilemon/A-Backdoor-Defense-for-LLMs): An extension of ONION that studies leave-one-out embedding shifts and early-layer signals to identify textual backdoor triggers.
-
-<br>
-
-#### some writings
-
-{% for post in site.posts %}
-- [{{ post.title }}]({{ post.url | relative_url }}) ({{ post.date | date: "%b %Y" }})
-{% endfor %}
